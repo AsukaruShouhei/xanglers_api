@@ -36,10 +36,54 @@ class TestPosts(TestCase):
         token = jwt_encode_handler(payload)
 
 
-        verify_url = reverse('api-jwt-verify')
+        verify_url = reverse('verify_token')
         credentials = {
             'token': token
         }
 
         resp = self.client.post(verify_url, credentials, format='json')
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+    def test_get_posts_auth(self):
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+        user = User.objects.create_user(username='user', email='user@foo.com', password='pass')
+        user.is_active = True
+        user.save()
+        payload = jwt_payload_handler(user)
+        token = jwt_encode_handler(payload)
+
+        verify_url = reverse('verify_token')
+        credentials = {
+            'token': token
+        }
+
+        resp = self.client.post(verify_url, credentials, format='json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        url = reverse('posts')
+        resp = self.client.get(url, HTTP_AUTHORIZATION='JWT ' + token)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+    def test_get_posts_auth_error(self):
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+
+        user = User.objects.create_user(username='user', email='user@foo.com', password='pass')
+        user.is_active = True
+        user.save()
+        payload = jwt_payload_handler(user)
+        token = jwt_encode_handler(payload)
+
+        verify_url = reverse('verify_token')
+        credentials = {
+            'token': token
+        }
+        resp = self.client.post(verify_url, credentials, format='json')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        url = reverse('posts')
+        resp = self.client.get(url, HTTP_AUTHORIZATION='JWT ' + 'abdddddddd')
+        self.assertEqual(resp.status_code, status.HTTP_401_UNAUTHORIZED)
+        print('url is ')
+        print(url)
+        print(' ht')

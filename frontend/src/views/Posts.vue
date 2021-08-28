@@ -39,7 +39,9 @@ export default {
         } else if (response.status === 401) {
           this.resp = "no"
           this.$message("You do not have permission to see this page.");
-          
+        } else  if ( response.status === 404){
+          console.log('遠藤');
+          console.log(response);
         }
       });
     }

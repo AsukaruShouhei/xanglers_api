@@ -68,6 +68,11 @@ DATABASES = {
         'HOST': 'db',
         'PORT': 3306,
         'ATOMIC_REQUESTS': True,
+        'TEST': {
+            'NAME': "test_mydb",
+            # ↓ここを追記した
+            'MIRROR': "default",
+        },
     }
 }
 
