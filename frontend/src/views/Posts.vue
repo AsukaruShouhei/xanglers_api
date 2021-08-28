@@ -2,7 +2,7 @@
   <div>
     <div v-if="resp">
       <el-container>
-        <b>Please <router-link class="login" to="/login">login</router-link> to see posts. </b>
+        <b>Please <router-link class="login" to="/auth">login</router-link> to see posts. </b>
       </el-container>
     </div>
     <div v-if="posts" v-for="(post, i) in posts" :key="i">
