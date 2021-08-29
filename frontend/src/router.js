@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
 import Table from './views/Table.vue';
-import DockerCompose from './views/DockerCompose';
+import DockerCompose from './views/DockerCompose.vue';
 
 Vue.use(Router);
 

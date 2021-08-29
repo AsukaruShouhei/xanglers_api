@@ -22,30 +22,32 @@ export default {
   },
   mounted() {
     this.fetchPosts();
-    document.title = "Posts";
+    document.title = 'Posts';
   },
   methods: {
     fetchPosts() {
-      fetch("/api/posts/", {
-        method: "GET",
+      fetch('/api/posts/', {
+        method: 'GET',
         headers: {
-          Accept: "application/json"
-        }
-      }).then(response => {
+          Accept: 'application/json',
+        },
+      }).then((response) => {
         if (response.ok) {
-          response.json().then(json => {
+          response.json().then((json) => {
             this.posts = json;
           });
         } else if (response.status === 401) {
-          this.resp = "no"
-          this.$message("You do not have permission to see this page.");
-        } else  if ( response.status === 404){
+          this.resp = 'no';
+          this.$message('You do not have permission to see this page.');
+        } else if (response.status === 404) {
+          // eslint-disable-next-line no-console
           console.log('遠藤');
+          // eslint-disable-next-line no-console
           console.log(response);
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

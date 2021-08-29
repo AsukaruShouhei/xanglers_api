@@ -20,7 +20,9 @@
             </template>
             <el-menu-item-group title="Architecture">
                 <el-menu-item :route="{name:'home'}" index="1-1">Draw.io Diagram</el-menu-item>
-                <el-menu-item :route="{name:'docker-compose'}" index="1-2">docker-compose</el-menu-item>
+                <el-menu-item :route="{name:'docker-compose'}" index="1-2">
+                  docker-compose
+                </el-menu-item>
             </el-menu-item-group>
             <el-menu-item-group title="Posts">
                 <el-menu-item :route="{name:'posts'}" index="1-3">Posts</el-menu-item>
