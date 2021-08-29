@@ -1,21 +1,9 @@
 version: '3'
 
 services:
-  backend:
-    build:
-      context: ./backend
-    command: /start_prod.sh
-    networks:
-      - django-nginx
-    volumes:
-      - .:/code
-      - django-static:/backend/static
-    depends_on:
-      - db
-
   db:
+    container_name: db
     image: mysql:5.7
-    container_name: mysql_host
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: test_database
@@ -32,22 +20,77 @@ services:
     networks:
       - django-nginx
 
-  nginx:
-    build:
-      context: .
-      dockerfile: nginx/Dockerfile
-    ports:
-      - 80:80
+  backend:
+    container_name: backend
+    build: ./backend
+    command: /start_dev.sh
+    volumes:
+      - .:/code
+      - django-static:/backend/static
     networks:
       - django-nginx
+    depends_on:
+      - db
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
     volumes:
-      - ./nginx/prod.conf:/etc/nginx/nginx.conf:ro
-      - django-static:/usr/src/app/static
+      - './frontend:/app/:ro'
+      - '/app/node_modules'
+    ports:
+      - "8080:8080"
     depends_on:
       - backend
+    networks:
+      - django-nginx
+    environment:
+      - NODE_ENV=development
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    volumes:
+      - ./nginx/dev.conf:/etc/nginx/nginx.conf:ro
+      - django-static:/usr/src/app/static
+    networks:
+      - django-nginx
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    networks:
+      - django-nginx
+
+  celery:
+    build: ./backend
+    container_name: celery
+    command: bash -c 'celery worker --app=backend.celery_app:app --loglevel=info'
+    volumes:
+      - ./backend:/code
+    depends_on:
+      - db
+      - redis
+    networks:
+      - django-nginx
+
+  portainer:
+    image: portainer/portainer
+    container_name: portainer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer-data:/data
+    ports:
+      - 9000:9000
 
 volumes:
   django-static:
+  portainer-data:
 
 networks:
   django-nginx:
