@@ -40,7 +40,7 @@ export default {
     return {
       tableData6: [{
         id: '12987122',
-        name: 'Tom',
+        name: '遠藤',
         amount1: '234',
         amount2: '3.2',
         amount3: 10,
